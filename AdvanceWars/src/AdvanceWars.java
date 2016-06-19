@@ -26,5 +26,6 @@ public class AdvanceWars {
 		System.out.println("Defender health: " + defender.getHealth());
 		
 		//yoyo
+		//taku
 	}
 }
