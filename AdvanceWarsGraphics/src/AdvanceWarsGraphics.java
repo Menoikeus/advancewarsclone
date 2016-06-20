@@ -69,6 +69,7 @@ public class AdvanceWarsGraphics {
 
     // Start our game
     public void start() throws LWJGLException {
+    	//hey
         // Set up our display 
         Display.setTitle("Display example"); //title of our window
         Display.setResizable(true); //whether our window is resizable
