@@ -10,6 +10,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
 public class AdvanceWarsGraphics {
 
@@ -21,6 +24,7 @@ public class AdvanceWarsGraphics {
 	
 	private long lastFPS;
 	private int fps;
+	Entity2D box;
 	
     public static void main(String[] args) throws LWJGLException {
     	new AdvanceWarsGraphics().start();
@@ -28,35 +32,28 @@ public class AdvanceWarsGraphics {
 
     // Start our game
     public void start() throws LWJGLException {
-    	Display.setDisplayMode(new DisplayMode(1280,800));
-    	Display.setFullscreen(true);;
-    	Display.create();
-    	
-    	//OPENGL
-    	GL11.glMatrixMode(GL11.GL_PROJECTION);
-    	GL11.glLoadIdentity();
-    	GL11.glOrtho(0,  Display.getWidth(),  0,  Display.getHeight(),  1,  -1);
-    	GL11.glMatrixMode(GL11.GL_MODELVIEW);
-    	glEnable(GL_BLEND);
-    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    	
+    	initGL(800, 600);
     	getDelta();
     	lastFPS = getTime();
     	
+    	box = new Box2D(30.0f, 50.0f, 25.0f);
+    	
+    	Texture tex  = null;
     	//EXPERIMENTAL
-    	Texture tex = null;
     	try {
-			tex = new Texture();
+			tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("soldier.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	
+    	
     	while(!Display.isCloseRequested())
     	{
     		update(getDelta());
     		renderGL();
-    		debugTexture(tex, 300, 300, 400, 400);
+    		//debugTexture(tex, 300, 300, 400, 400);
+    		//render(tex);
     		
     		Display.update();
     		Display.sync(60);
@@ -128,6 +125,7 @@ public class AdvanceWarsGraphics {
     	GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glColor3f(0.5f,0.5f,1.0f);
 		
+		/*
 		GL11.glPushMatrix();
 			GL11.glTranslatef(x,  y, 0);
 			GL11.glRotatef(rotation,  0f,  0f,  1f);
@@ -138,14 +136,27 @@ public class AdvanceWarsGraphics {
 			    GL11.glVertex2f(x + 50, y + 50);
 			    GL11.glVertex2f(x + 50, y - 50);
 			GL11.glEnd();
-		GL11.glPopMatrix();
+		GL11.glPopMatrix();*/
+		
+		box.draw();
     }
     
+    public void render(Texture texture) {
+		texture.bind(); // or GL11.glBind(texture.getTextureID());
+ 
+		GL11.glBegin(GL11.GL_QUADS);
+			GL11.glTexCoord2f(0,0);
+			GL11.glVertex2f(100,100);
+			GL11.glTexCoord2f(1,0);
+			GL11.glVertex2f(100+texture.getTextureWidth(),100);
+			GL11.glTexCoord2f(1,1);
+			GL11.glVertex2f(100+texture.getTextureWidth(),100+texture.getTextureHeight());
+			GL11.glTexCoord2f(0,1);
+			GL11.glVertex2f(100,100+texture.getTextureHeight());
+		GL11.glEnd();
+	}
+    
     public static void debugTexture(Texture tex, float x, float y, float width, float height) {
-        //usually glOrtho would not be included in our game loop
-        //however, since it's deprecated, let's keep it inside of this debug function which we will remove later
-        //likely redundant; will be removed upon migration to "modern GL"
-
         //bind the texture before rendering it
         tex.bind();
 
@@ -168,5 +179,31 @@ public class AdvanceWarsGraphics {
             glTexCoord2f(u2, v);
             glVertex2f(x + width, y);
         glEnd();
+    }
+    
+    public void initGL(int width, int height)
+    {
+    	try {
+			Display.setDisplayMode(new DisplayMode(width,height));
+	    	Display.setFullscreen(true);;
+	    	Display.create();
+    	} catch (LWJGLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	//OPENGL
+    	GL11.glEnable(GL11.GL_TEXTURE_2D); 
+    	
+    	GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+    	
+    //	glEnable(GL_BLEND);
+    //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    	
+    	GL11.glMatrixMode(GL11.GL_PROJECTION);
+    	GL11.glLoadIdentity();
+    	GL11.glOrtho(0,  Display.getWidth(),  Display.getHeight(),  0,  1,  -1);
+    	GL11.glMatrixMode(GL11.GL_MODELVIEW);
+    	
     }
 }
