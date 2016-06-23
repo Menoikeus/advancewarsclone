@@ -12,6 +12,8 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
+import entity.Unit;
+
 public class AdvanceWarsCloneProject {
 	private long lastFrame;
 	private boolean isRunning;
@@ -37,6 +39,8 @@ public class AdvanceWarsCloneProject {
 	Menu gameMenu;
 	
 	Selector selector;
+	
+	int moveDestX, moveDestY;
 	
 	public static void main(String[] args)
 	{
@@ -122,7 +126,7 @@ public class AdvanceWarsCloneProject {
 					gameMenu.addToSelected(1);
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-				if(uMap.getUnit(selector.getSelectorX(),selector.getSelectorY()) != null && mode_moving == false && justDid == false && mode_menu == false)
+				if(uMap.getUnit(selector.getSelectorX(),selector.getSelectorY()) != null && mode_moving == false && justDid == false && mode_menu == false && mode_attacking == false)
 				{
 					mode_moving = true;
 					moveUnitX = selector.getSelectorX();
@@ -131,12 +135,13 @@ public class AdvanceWarsCloneProject {
 					move_map = uMap.generateMovementMap(map, selector.getSelectorX(), selector.getSelectorY());
 					justDid = true;
 				}
-				if(move_map[selector.getSelectorY()][selector.getSelectorX()] == 1 && mode_moving == true && justDid == false && mode_menu == false)
+				if(move_map[selector.getSelectorY()][selector.getSelectorX()] == 1 && mode_moving == true && justDid == false && mode_menu == false && mode_attacking == false)
 				{
-					if(selector.getSelectorX() - 1 > 0 && uMap.getUnit(selector.getSelectorX() - 1,selector.getSelectorY()) != null || 
-							selector.getSelectorX() + 1 > 0 && uMap.getUnit(selector.getSelectorX() + 1,selector.getSelectorY()) != null ||
-							selector.getSelectorY() - 1 > 0 && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() - 1) != null ||
-							selector.getSelectorY() + 1 > 0 && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() + 1) != null)
+					Unit originalUnit = uMap.getUnit(moveUnitX,moveUnitY);
+					if(selector.getSelectorX() - 1 > 0 && uMap.getUnit(selector.getSelectorX() - 1,selector.getSelectorY()) != null && uMap.getUnit(selector.getSelectorX() - 1,selector.getSelectorY()) != originalUnit || 
+							selector.getSelectorX() + 1 < gridInfo.getWidth() && uMap.getUnit(selector.getSelectorX() + 1,selector.getSelectorY()) != null && uMap.getUnit(selector.getSelectorX() + 1,selector.getSelectorY()) != originalUnit ||
+							selector.getSelectorY() - 1 > 0 && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() - 1) != null && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() - 1) != originalUnit ||
+							selector.getSelectorY() + 1 < gridInfo.getHeight() && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() + 1) != null && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() + 1) != originalUnit)
 						gameMenu = new Menu(MenuType.MOVE_OR_FIRE);
 					else
 						gameMenu = new Menu(MenuType.MOVE);
@@ -151,9 +156,25 @@ public class AdvanceWarsCloneProject {
 						uMap.moveUnit(moveUnitX, moveUnitY, selector.getSelectorX(), selector.getSelectorY());
 					else if(gameMenu.getOptionSelected().equals("FIRE"))
 					{
+						moveDestX = selector.getSelectorX();
+						moveDestY = selector.getSelectorY();
 						mode_attacking = true;
 						attack_map = uMap.generateAttackMap(selector.getSelectorX(), selector.getSelectorY(), moveUnitX, moveUnitY);
 					}
+					justDid = true;
+				} 
+				if(mode_attacking == true && attack_map[selector.getSelectorY()][selector.getSelectorX()] == 1 && justDid == false)
+				{
+					uMap.moveUnit(moveUnitX, moveUnitY, moveDestX, moveDestY);
+					Calculator.fight(uMap.getUnit(moveDestX, moveDestY), uMap.getUnit(selector.getSelectorX(), selector.getSelectorY()));
+					if(uMap.getUnit(moveDestX, moveDestY).getHealth() <= 0)
+						uMap.destroyUnit(moveUnitX, moveUnitY);
+					if(uMap.getUnit(selector.getSelectorX(), selector.getSelectorY()).getHealth() <= 0)
+						uMap.destroyUnit(selector.getSelectorX(), selector.getSelectorY());
+					
+					mode_menu = false;
+					mode_moving = false;
+					mode_attacking = false;
 					justDid = true;
 				}
 			}

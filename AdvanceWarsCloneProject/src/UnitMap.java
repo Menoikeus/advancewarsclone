@@ -16,6 +16,7 @@ public class UnitMap {
 	private int aTexSize;
 	
 	Texture spritesheet;
+	Texture numbersheet;
 	
 	public UnitMap(int width, int height, int aTS, int tS, int sF)
 	{	
@@ -28,6 +29,7 @@ public class UnitMap {
 		
 		try {
 			spritesheet = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/unit_spritesheet.png"));
+			numbersheet = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/number_sheet.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,6 +41,7 @@ public class UnitMap {
 		
 		unit_map[10][5] = new Unit(UnitType.INFANTRY);
 		unit_map[10][9] = new Unit(UnitType.INFANTRY);
+		unit_map[9][8] = new Unit(UnitType.MECH);
 	}
 	
 	public void draw()
@@ -68,11 +71,50 @@ public class UnitMap {
 					GL11.glVertex2f(0 + j * aTexSize, aTexSize+ i * aTexSize);
 				}
 		GL11.glEnd();
+		
+		numbersheet.bind();
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GL11.glBegin(GL11.GL_QUADS);
+		for(int i = 0; i < height; i++)
+			for(int j = 0; j < width; j++)
+			{
+				if(unit_map[i][j] != null)
+				{
+					double health = unit_map[i][j].getHealth();
+					int[] tileInfo = new int[2];
+					if(health < 9)
+					{
+						tileInfo = Number.getTextureLocationOfNumber((int)(unit_map[i][j].getHealth()+1));
+					}
+					else if(health < 10)
+					{
+						tileInfo = Number.getTextureLocationOfNumber(9);
+					}
+					if(health < 10)
+					{
+						GL11.glTexCoord2f((tileInfo[0])/((float)numbersheet.getTextureWidth()),((tileInfo[1])+16)/((float)numbersheet.getTextureHeight()));
+						GL11.glVertex2f(0 + j * aTexSize,i * aTexSize);
+						GL11.glTexCoord2f((tileInfo[0] +16)/((float)numbersheet.getTextureWidth()),((tileInfo[1])+16)/((float)numbersheet.getTextureHeight()));
+						GL11.glVertex2f(aTexSize + j * aTexSize,i * aTexSize);
+						GL11.glTexCoord2f((tileInfo[0] +16)/((float)numbersheet.getTextureWidth()),(tileInfo[1])/((float)numbersheet.getTextureHeight()));
+						GL11.glVertex2f(aTexSize + j * aTexSize,aTexSize + i * aTexSize);
+						GL11.glTexCoord2f((tileInfo[0])/((float)numbersheet.getTextureWidth()),(tileInfo[1])/((float)numbersheet.getTextureHeight()));
+						GL11.glVertex2f(0 + j * aTexSize, aTexSize+ i * aTexSize);
+					}
+				}
+			}
+		GL11.glEnd();
 	}
 	
 	public Unit getUnit(int x, int y)
 	{
 		return unit_map[y][x];
+	}
+	
+	public void destroyUnit(int x, int y)
+	{
+		unit_map[y][x] = null;
 	}
 	
 	public int[][] generateMovementMap(Map map, int x, int y)

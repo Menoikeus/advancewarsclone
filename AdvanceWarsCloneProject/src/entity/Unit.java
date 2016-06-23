@@ -16,7 +16,7 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class Unit extends AbstractEntity2D{
 	UnitType uType;
-	int health;
+	double health;
 	
 	public Unit(UnitType u) {
 		uType = u;
@@ -30,18 +30,6 @@ public class Unit extends AbstractEntity2D{
 		uType = UnitType.INFANTRY;
 	}
 	
-	@Override
-	public void setUp() {
-	}
-
-	@Override
-	public void destroy() {	
-	}
-
-	@Override
-	public void draw() {
-	}
-	
 	public int[] getSpriteLocation()
 	{
 		return uType.getInfo();
@@ -50,5 +38,33 @@ public class Unit extends AbstractEntity2D{
 	public UnitType getUnitType()
 	{
 		return uType;
+	}
+
+	public double getHealth() {
+		// TODO Auto-generated method stub
+		return health;
+	}
+	
+	public void setHealth(double h) {
+		// TODO Auto-generated method stub
+		health = h;
+	}
+
+	@Override
+	public void setUp() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void draw() {
+		// TODO Auto-generated method stub
+		
 	}
 }

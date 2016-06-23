@@ -24,9 +24,5 @@ public class AdvanceWars {
 		
 		System.out.println("Attacker health: " + attacker.getHealth());
 		System.out.println("Defender health: " + defender.getHealth());
-		
-		//yoyo
-		//woah
-		//taku
 	}
 }
