@@ -41,7 +41,7 @@ public class AdvanceWarsGraphics {
     	Texture tex  = null;
     	//EXPERIMENTAL
     	try {
-			tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("soldier.png"));
+			tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("map_spritesheet.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,9 +51,9 @@ public class AdvanceWarsGraphics {
     	while(!Display.isCloseRequested())
     	{
     		update(getDelta());
-    		renderGL();
+    		//renderGL();
     		//debugTexture(tex, 300, 300, 400, 400);
-    		//render(tex);
+    		render(tex);
     		
     		Display.update();
     		Display.sync(60);
@@ -197,8 +197,8 @@ public class AdvanceWarsGraphics {
     	
     	GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
     	
-    //	glEnable(GL_BLEND);
-    //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    	glEnable(GL_BLEND);
+    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     	
     	GL11.glMatrixMode(GL11.GL_PROJECTION);
     	GL11.glLoadIdentity();
