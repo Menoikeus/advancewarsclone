@@ -14,25 +14,27 @@ public class Map {
 	private int width, height;
 	private Tile[][] tile_map;
 	
-	private final int texture_size = 16;
+	private int texture_size = 16;
 	private int scaleFactor;
+	private int aTexSize;
 	
 	Texture spritesheet;
 	Texture selector;
 	
 	int[] selectorLocation;
 	
-	public Map(int sF)
-	{
+	public Map(int width, int height, int aTS, int tS, int sF)
+	{	
+		this.width = width;
+		this.height = height;
+		tile_map = new Tile[this.height][this.width];
+		aTexSize = aTS;
+		texture_size = tS;
 		scaleFactor = sF;
-		width = 1280/(texture_size * scaleFactor);
-		height = 1024/(texture_size * scaleFactor);
-		
-		tile_map = new Tile[height][width];
 		
 		try {
 			spritesheet = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/map_spritesheet.png"));
-			selector = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/gold.png"));
+			selector = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/selector.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,7 +134,6 @@ public class Map {
 	public void draw()
 	{
 		spritesheet.bind();
-		int aTexSize = texture_size*scaleFactor;
 		
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -145,7 +146,7 @@ public class Map {
 				
 				//System.out.println((tileInfo[0])/((float)spritesheet.getWidth()));
 				//System.out.println((float)spritesheet.getTextureHeight());
-				System.out.println((tileInfo[0] +16)/((float)spritesheet.getTextureWidth()));
+				//System.out.println((tileInfo[0] +16)/((float)spritesheet.getTextureWidth()));
 				
 				GL11.glTexCoord2f((tileInfo[0])/((float)spritesheet.getTextureWidth()),((tileInfo[1])+16)/((float)spritesheet.getTextureHeight()));
 				GL11.glVertex2f(0 + j * aTexSize,i * aTexSize);
@@ -158,20 +159,7 @@ public class Map {
 			}
 		GL11.glEnd();
 		
-		selector.bind();
-		int i = selectorLocation[1];
-		int j = selectorLocation[0];
 		
-		GL11.glBegin(GL11.GL_QUADS);
-			GL11.glTexCoord2f(0,0);
-			GL11.glVertex2f(0 + j * aTexSize,i * aTexSize);
-			GL11.glTexCoord2f(1,1);
-			GL11.glVertex2f(aTexSize + j * aTexSize,i * aTexSize);
-			GL11.glTexCoord2f(1, 0);
-			GL11.glVertex2f(aTexSize + j * aTexSize,aTexSize + i * aTexSize);
-			GL11.glTexCoord2f(0,1);
-			GL11.glVertex2f(0 + j * aTexSize, aTexSize+ i * aTexSize);
-		GL11.glEnd();
 				/*
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2f(0,0);
@@ -184,6 +172,26 @@ public class Map {
 		GL11.glVertex2f(100,100+64);*/
 		
 		
+	}
+	
+	public void drawSelector()
+	{
+		selector.bind();
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		int i = selectorLocation[1];
+		int j = selectorLocation[0];
+		
+		GL11.glBegin(GL11.GL_QUADS);
+			GL11.glTexCoord2f(0,0);
+			GL11.glVertex2f(0 + j * aTexSize, aTexSize+ i * aTexSize);
+			GL11.glTexCoord2f(1, 0);
+			GL11.glVertex2f(aTexSize + j * aTexSize,aTexSize + i * aTexSize);
+			GL11.glTexCoord2f(1,1);
+			GL11.glVertex2f(aTexSize + j * aTexSize,i * aTexSize);
+			GL11.glTexCoord2f(0,1);
+			GL11.glVertex2f(0 + j * aTexSize,i * aTexSize);
+		GL11.glEnd();
 	}
 	
 	public int getWidth()
@@ -226,6 +234,11 @@ public class Map {
 	public int getSelectorY()
 	{
 		return selectorLocation[1];
+	}
+	
+	public Tile getTile(int x, int y)
+	{
+		return tile_map[y][x];
 	}
 }
 
