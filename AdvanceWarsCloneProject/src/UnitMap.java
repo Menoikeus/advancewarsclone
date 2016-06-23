@@ -126,17 +126,18 @@ public class UnitMap {
 	public int[][] generateAttackMap(int x, int y, int origX, int origY)
 	{
 		int[][] objectMap = new int[height][width];
-		int min = unit_map[origY][origX].getUnitType().getMinAttackRange();
-		int max = unit_map[origY][origX].getUnitType().getMaxAttackRange();
+		Unit attackingUnit = unit_map[origY][origX];
+		int min = attackingUnit.getUnitType().getMinAttackRange();
+		int max = attackingUnit.getUnitType().getMaxAttackRange();
 		
 		if(x + 1 < width)
-			recurseAttack(objectMap, "right", min, max, x + 1, y);
+			recurseAttack(objectMap, "right", min, max, x + 1, y, attackingUnit);
 		if(x - 1 >= 0)
-			recurseAttack(objectMap, "left", min, max, x - 1, y);
+			recurseAttack(objectMap, "left", min, max, x - 1, y, attackingUnit);
 		if(y - 1 >= 0)
-			recurseAttack(objectMap, "bottom", min, max, x, y - 1);
+			recurseAttack(objectMap, "bottom", min, max, x, y - 1, attackingUnit);
 		if(y + 1 < height)
-			recurseAttack(objectMap, "top", min, max, x, y + 1);
+			recurseAttack(objectMap, "top", min, max, x, y + 1, attackingUnit);
 		for(int i = 0; i < height; i++)
 		{
 			for(int j = 0; j < width; j++)
@@ -146,7 +147,7 @@ public class UnitMap {
 		return objectMap;
 		
 	}
-	public void recurseAttack(int[][] objectMap, String side, int min, int max, int x, int y)
+	public void recurseAttack(int[][] objectMap, String side, int min, int max, int x, int y, Unit attackingUnit)
 	{
 
 		System.out.println("min: " + min + " max: " + max);
@@ -155,19 +156,19 @@ public class UnitMap {
 		
 		if(max >= 0)
 		{	
-			if(min < 0)
+			if(min < 0 && unit_map[y][x] != null && unit_map[y][x] != attackingUnit)
 			{
 				objectMap[y][x] = 1;
 				System.out.println("ENEMY SPOTTED");
 			}
 			if(side != "top" && x + 1 < width)
-				recurseAttack(objectMap, side, min, max, x + 1, y);
+				recurseAttack(objectMap, side, min, max, x + 1, y, attackingUnit);
 			if(side != "bottom" && x - 1 >= 0)
-				recurseAttack(objectMap, side, min, max, x - 1, y);
+				recurseAttack(objectMap, side, min, max, x - 1, y, attackingUnit);
 			if(side != "right" && y - 1 >= 0)
-				recurseAttack(objectMap, side, min, max, x, y - 1);
+				recurseAttack(objectMap, side, min, max, x, y - 1, attackingUnit);
 			if(side != "left" && y + 1 < height)
-				recurseAttack(objectMap, side, min, max, x, y + 1);
+				recurseAttack(objectMap, side, min, max, x, y + 1, attackingUnit);
 		}	
 	}
 	

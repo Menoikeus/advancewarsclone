@@ -36,6 +36,8 @@ public class AdvanceWarsCloneProject {
 	
 	Menu gameMenu;
 	
+	Selector selector;
+	
 	public static void main(String[] args)
 	{
 		new AdvanceWarsCloneProject().start();
@@ -49,6 +51,7 @@ public class AdvanceWarsCloneProject {
 		gridInfo = new GridInfo(scaleFactor);
 		map = new Map(gridInfo.getWidth(), gridInfo.getHeight(), gridInfo.getATexSize(), gridInfo.getTextureSize(), scaleFactor);
 		uMap = new UnitMap(gridInfo.getWidth(), gridInfo.getHeight(), gridInfo.getATexSize(), gridInfo.getTextureSize(), scaleFactor);
+		selector = new Selector(gridInfo.getATexSize(), gridInfo.getWidth(), gridInfo.getHeight());
 		
 		move_map = new int[gridInfo.getHeight()][gridInfo.getWidth()];
 				
@@ -100,40 +103,40 @@ public class AdvanceWarsCloneProject {
 		while(Keyboard.next()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
 				if(!mode_menu)
-					map.moveSelector(0);
+					selector.moveSelector(0);
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
 				if(!mode_menu)
-					map.moveSelector(1);
+					selector.moveSelector(1);
 				else
 					gameMenu.addToSelected(-1);
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
 				if(!mode_menu)
-					map.moveSelector(2);
+					selector.moveSelector(2);
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
 				if(!mode_menu)
-					map.moveSelector(3);
+					selector.moveSelector(3);
 				else
 					gameMenu.addToSelected(1);
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-				if(uMap.getUnit(map.getSelectorX(),map.getSelectorY()) != null && mode_moving == false && justDid == false && mode_menu == false)
+				if(uMap.getUnit(selector.getSelectorX(),selector.getSelectorY()) != null && mode_moving == false && justDid == false && mode_menu == false)
 				{
 					mode_moving = true;
-					moveUnitX = map.getSelectorX();
-					moveUnitY = map.getSelectorY();
+					moveUnitX = selector.getSelectorX();
+					moveUnitY = selector.getSelectorY();
 					System.out.println("MoveUnitX: " + moveUnitX + " MoveUnitY: " + moveUnitY);
-					move_map = uMap.generateMovementMap(map, map.getSelectorX(), map.getSelectorY());
+					move_map = uMap.generateMovementMap(map, selector.getSelectorX(), selector.getSelectorY());
 					justDid = true;
 				}
-				if(move_map[map.getSelectorY()][map.getSelectorX()] == 1 && mode_moving == true && justDid == false && mode_menu == false)
+				if(move_map[selector.getSelectorY()][selector.getSelectorX()] == 1 && mode_moving == true && justDid == false && mode_menu == false)
 				{
-					if(map.getSelectorX() - 1 > 0 && uMap.getUnit(map.getSelectorX() - 1,map.getSelectorY()) != null || 
-							map.getSelectorX() + 1 > 0 && uMap.getUnit(map.getSelectorX() + 1,map.getSelectorY()) != null ||
-							map.getSelectorY() - 1 > 0 && uMap.getUnit(map.getSelectorX(),map.getSelectorY() - 1) != null ||
-							map.getSelectorY() + 1 > 0 && uMap.getUnit(map.getSelectorX(),map.getSelectorY() + 1) != null)
+					if(selector.getSelectorX() - 1 > 0 && uMap.getUnit(selector.getSelectorX() - 1,selector.getSelectorY()) != null || 
+							selector.getSelectorX() + 1 > 0 && uMap.getUnit(selector.getSelectorX() + 1,selector.getSelectorY()) != null ||
+							selector.getSelectorY() - 1 > 0 && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() - 1) != null ||
+							selector.getSelectorY() + 1 > 0 && uMap.getUnit(selector.getSelectorX(),selector.getSelectorY() + 1) != null)
 						gameMenu = new Menu(MenuType.MOVE_OR_FIRE);
 					else
 						gameMenu = new Menu(MenuType.MOVE);
@@ -145,11 +148,11 @@ public class AdvanceWarsCloneProject {
 					mode_menu = false;
 					mode_moving = false;
 					if(gameMenu.getOptionSelected().equals("WAIT"))
-						uMap.moveUnit(moveUnitX, moveUnitY, map.getSelectorX(), map.getSelectorY());
+						uMap.moveUnit(moveUnitX, moveUnitY, selector.getSelectorX(), selector.getSelectorY());
 					else if(gameMenu.getOptionSelected().equals("FIRE"))
 					{
 						mode_attacking = true;
-						attack_map = uMap.generateAttackMap(map.getSelectorX(), map.getSelectorY(), moveUnitX, moveUnitY);
+						attack_map = uMap.generateAttackMap(selector.getSelectorX(), selector.getSelectorY(), moveUnitX, moveUnitY);
 					}
 					justDid = true;
 				}
@@ -190,8 +193,8 @@ public class AdvanceWarsCloneProject {
 		
 		if(mode_menu == true)
 		{
-			int i = map.getSelectorY();
-			int j = map.getSelectorX();
+			int i = selector.getSelectorY();
+			int j = selector.getSelectorX();
 			menuTexture.bind();
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -279,10 +282,10 @@ public class AdvanceWarsCloneProject {
 					}
 				}
 			GL11.glEnd();
-			map.drawSelector();
+			selector.drawSelector();
 		}
 		else
-			map.drawSelector();
+			selector.drawSelector();
 	}
 	
 	//housekeeping
