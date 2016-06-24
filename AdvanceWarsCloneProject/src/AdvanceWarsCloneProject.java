@@ -17,7 +17,7 @@ import entity.Unit;
 public class AdvanceWarsCloneProject {
 	private long lastFrame;
 	private boolean isRunning;
-	private int width = 1280, height = 1024;
+	private int width = 1920, height = 1024;
 	int scaleFactor = 4;
 	Map map;
 	UnitMap uMap;
@@ -52,7 +52,7 @@ public class AdvanceWarsCloneProject {
 		getDelta();
 		isRunning = true;
 		
-		gridInfo = new GridInfo(scaleFactor);
+		gridInfo = new GridInfo(scaleFactor, width, height);
 		map = new Map(gridInfo.getWidth(), gridInfo.getHeight(), gridInfo.getATexSize(), gridInfo.getTextureSize(), scaleFactor);
 		uMap = new UnitMap(gridInfo.getWidth(), gridInfo.getHeight(), gridInfo.getATexSize(), gridInfo.getTextureSize(), scaleFactor);
 		selector = new Selector(gridInfo.getATexSize(), gridInfo.getWidth(), gridInfo.getHeight());

@@ -9,9 +9,9 @@ public class Calculator {
 		UnitType aType = attacker.getUnitType();
 		UnitType dType = defender.getUnitType();
 		
-		double attackerDamage = aType.getStrength() * (dType.isArmored() ? aType.getArmorModifier() : aType.getInfModifier()) * (1.0 - dType.getDamageArmor()) * 1.1;
-		double defenderDamage = dType.getStrength() * (aType.isArmored() ? dType.getArmorModifier() : dType.getInfModifier()) * (1.0 - aType.getDamageArmor()) * .8;
-	
+		double attackerDamage = attacker.getHealth()/10 * aType.getStrength() * (dType.isArmored() ? aType.getArmorModifier() : aType.getInfModifier()) * (1.0 - dType.getDamageArmor()) * 1.1;
+		double defenderDamage = defender.getHealth()/10 * dType.getStrength() * (aType.isArmored() ? dType.getArmorModifier() : dType.getInfModifier()) * (1.0 - aType.getDamageArmor()) * .8;
+		
 		attacker.setHealth(attacker.getHealth() - defenderDamage);
 		defender.setHealth(defender.getHealth() - attackerDamage);
 		

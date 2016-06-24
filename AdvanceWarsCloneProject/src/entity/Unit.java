@@ -48,6 +48,8 @@ public class Unit extends AbstractEntity2D{
 	public void setHealth(double h) {
 		// TODO Auto-generated method stub
 		health = h;
+		if(health < 0)
+			health = 0;
 	}
 
 	@Override

@@ -42,6 +42,9 @@ public class UnitMap {
 		unit_map[10][5] = new Unit(UnitType.INFANTRY);
 		unit_map[10][9] = new Unit(UnitType.INFANTRY);
 		unit_map[9][8] = new Unit(UnitType.MECH);
+		unit_map[5][9] = new Unit(UnitType.RECON);
+		unit_map[4][3] = new Unit(UnitType.TANK);
+		unit_map[8][8] = new Unit(UnitType.ARTILLERY);
 	}
 	
 	public void draw()
@@ -123,14 +126,16 @@ public class UnitMap {
 		float count = (float)unit_map[y][x].getUnitType().getMoveCount();
 		objectMap[y][x] = 1;
 		
+		UnitType unType = unit_map[y][x].getUnitType();
+		
 		if(x + 1 < map.getWidth())
-			recurseFind(map, objectMap, "right", count, x + 1, y);
+			recurseFind(map, objectMap, "right", count, x + 1, y, unType);
 		if(x - 1 >= 0)
-			recurseFind(map, objectMap, "left", count, x - 1, y);
+			recurseFind(map, objectMap, "left", count, x - 1, y, unType);
 		if(y - 1 >= 0)
-			recurseFind(map, objectMap, "bottom", count, x, y - 1);
+			recurseFind(map, objectMap, "bottom", count, x, y - 1, unType);
 		if(y + 1 < map.getHeight())
-			recurseFind(map, objectMap, "top", count, x, y + 1);
+			recurseFind(map, objectMap, "top", count, x, y + 1, unType);
 		/*for(int i = 0; i < height; i++)
 		{
 			for(int j = 0; j < width; j++)
@@ -141,26 +146,36 @@ public class UnitMap {
 		
 	}
 	
-	public void recurseFind(Map map, int[][] objectMap, String side, float count, int x, int y)
+	public void recurseFind(Map map, int[][] objectMap, String side, float count, int x, int y, UnitType uT)
 	{
 		if(map.getTile(x, y).getType() == TerrainType.PLAIN)
 			count -= 1.0;
 		else if(map.getTile(x, y).getType() == TerrainType.FOREST)
-			count -= 2.0;
+		{
+			if(uT.isVehicle())
+				count -= 2.0;
+			else if(!uT.isVehicle())
+				count -= 1.0;
+		}
 		else if(map.getTile(x, y).getType() == TerrainType.ROAD)
-			count -= .5;
+		{
+			if(uT.isVehicle())
+				count -= .5;
+			else if(!uT.isVehicle())
+				count -= 1.0;
+		}
 		
 		if(!(count < -.3))
 		{	
 			objectMap[y][x] = 1;
 			if(side != "top" && x + 1 < map.getWidth())
-				recurseFind(map, objectMap, side, count, x + 1, y);
+				recurseFind(map, objectMap, side, count, x + 1, y, uT);
 			if(side != "bottom" && x - 1 >= 0)
-				recurseFind(map, objectMap, side, count, x - 1, y);
+				recurseFind(map, objectMap, side, count, x - 1, y, uT);
 			if(side != "right" && y - 1 >= 0)
-				recurseFind(map, objectMap, side, count, x, y - 1);
+				recurseFind(map, objectMap, side, count, x, y - 1, uT);
 			if(side != "left" && y + 1 < map.getHeight())
-				recurseFind(map, objectMap, side, count, x, y + 1);
+				recurseFind(map, objectMap, side, count, x, y + 1, uT);
 		}
 			
 	}
@@ -198,7 +213,7 @@ public class UnitMap {
 		
 		if(max >= 0)
 		{	
-			if(min < 0 && unit_map[y][x] != null && unit_map[y][x] != attackingUnit)
+			if(min < -1 && unit_map[y][x] != null && unit_map[y][x] != attackingUnit)
 			{
 				objectMap[y][x] = 1;
 				System.out.println("ENEMY SPOTTED");

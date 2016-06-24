@@ -7,11 +7,11 @@ public class GridInfo {
 	
 	private int width, height;
 	
-	public GridInfo(int sF)
+	public GridInfo(int sF, int w, int h)
 	{
 		scaleFactor = sF;
-		width = 1280/(texture_size * scaleFactor);
-		height = 1024/(texture_size * scaleFactor);
+		width = w/(texture_size * scaleFactor);
+		height = h/(texture_size * scaleFactor);
 		
 		aTexSize = scaleFactor * texture_size;
 	}
