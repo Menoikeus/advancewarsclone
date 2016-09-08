@@ -213,7 +213,7 @@ public class UnitMap {
 		
 		if(max >= 0)
 		{	
-			if(min < -1 && unit_map[y][x] != null && unit_map[y][x] != attackingUnit)
+			if(min <= -1 && unit_map[y][x] != null && unit_map[y][x] != attackingUnit)
 			{
 				objectMap[y][x] = 1;
 				System.out.println("ENEMY SPOTTED");
