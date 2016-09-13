@@ -39,12 +39,19 @@ public class UnitMap {
 			for(int j = 0; j < width; j++)
 				unit_map[i][j] = null;
 		
-		unit_map[10][5] = new Unit(UnitType.INFANTRY);
+		/*unit_map[10][5] = new Unit(UnitType.INFANTRY);
 		unit_map[10][9] = new Unit(UnitType.INFANTRY);
+		unit_map[10][15] = new Unit(UnitType.MECH);
 		unit_map[9][8] = new Unit(UnitType.MECH);
 		unit_map[5][9] = new Unit(UnitType.RECON);
 		unit_map[4][3] = new Unit(UnitType.TANK);
-		unit_map[8][8] = new Unit(UnitType.ARTILLERY);
+		unit_map[8][8] = new Unit(UnitType.ARTILLERY);*/
+		
+		for(int i = 2; i < height-2; i++)
+			for(int j = 5; j < width-5; j++)
+				unit_map[i][j] = new Unit(UnitType.INFANTRY);
+		
+		unit_map[height/2][width/2] = new Unit(UnitType.ARTILLERY);
 	}
 	
 	public void draw()
@@ -178,6 +185,28 @@ public class UnitMap {
 				recurseFind(map, objectMap, side, count, x, y + 1, uT);
 		}
 			
+	}
+	
+	
+	public int[][] generateAttackMap2(int x, int y, int origX, int origY)
+	{
+		int[][] objectMap = new int[height][width];
+		Unit attackingUnit = unit_map[origY][origX];
+		int min = attackingUnit.getUnitType().getMinAttackRange();
+		int max = attackingUnit.getUnitType().getMaxAttackRange();
+		
+		for(int i = 0; i < height; i++)
+			for(int j = 0; j < width; j++)
+			{
+				double distSquared = Math.pow(y - i,2) + Math.pow(x - j,2);
+				if((i != y || j != x) && unit_map[i][j] != null && distSquared > min * min && distSquared <= max * max)
+					objectMap[i][j] = 1;
+				else
+					objectMap[i][j] = 0;
+				System.out.println("ENEMY SPOTTED");
+			}
+		
+		return objectMap;
 	}
 	
 	public int[][] generateAttackMap(int x, int y, int origX, int origY)

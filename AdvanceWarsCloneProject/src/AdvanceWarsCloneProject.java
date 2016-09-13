@@ -159,7 +159,7 @@ public class AdvanceWarsCloneProject {
 						moveDestX = selector.getSelectorX();
 						moveDestY = selector.getSelectorY();
 						mode_attacking = true;
-						attack_map = uMap.generateAttackMap(selector.getSelectorX(), selector.getSelectorY(), moveUnitX, moveUnitY);
+						attack_map = uMap.generateAttackMap2(selector.getSelectorX(), selector.getSelectorY(), moveUnitX, moveUnitY);
 					}
 					justDid = true;
 				} 
