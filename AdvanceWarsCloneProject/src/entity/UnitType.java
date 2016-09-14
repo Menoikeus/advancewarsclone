@@ -1,11 +1,11 @@
 package entity;
 
 public enum UnitType {
-	INFANTRY("infantry", 4.0, 1.0, .5, 0.0, 3, false, false, 0, 0, 0, 1), 
-	MECH("mech", 5.0, 1.2, 1.5, .05, 2, false, false, 16, 0, 0, 1),
-	RECON("recon", 5.0, 1.6, .7, .10, 6, true, true, 32, 0, 0, 1), 
-	TANK("tank", 6.0, 1.1, 1.2, .20, 4, true, true, 48, 0, 0, 1),
-	ARTILLERY("artillery", 6.0, 1.2, 1.2, .10, 3, true, true, 64, 0, 1, 5);
+	INFANTRY("infantry", 4.0, 1.0, .5, 0.0, 3, false, false, 0, 0, 1, 1), 
+	MECH("mech", 5.0, 1.2, 1.5, .05, 2, false, false, 16, 0, 1, 1),
+	RECON("recon", 5.0, 1.6, .7, .10, 6, true, true, 32, 0, 1, 1), 
+	TANK("tank", 6.0, 1.1, 1.2, .20, 4, true, true, 48, 0, 1, 1),
+	ARTILLERY("artillery", 6.0, 1.2, 1.2, .10, 3, true, true, 64, 0, 2, 3);
 	
 	private String name;
 	private double strength;

@@ -198,8 +198,8 @@ public class UnitMap {
 		for(int i = 0; i < height; i++)
 			for(int j = 0; j < width; j++)
 			{
-				double distSquared = Math.pow(y - i,2) + Math.pow(x - j,2);
-				if((i != y || j != x) && unit_map[i][j] != null && distSquared > min * min && distSquared <= max * max)
+				double distSquared = Math.abs(y - i) + Math.abs(x - j);
+				if((i != origY || j != origX) && unit_map[i][j] != null && distSquared >= min && distSquared <= max)
 					objectMap[i][j] = 1;
 				else
 					objectMap[i][j] = 0;
